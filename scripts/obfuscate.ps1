@@ -232,7 +232,8 @@ function Invoke-PhpObfuscator{
         $PhpContent = $RetContent.Substring($StartIndex,($EndIndex-$StartIndex)+($TagHtmlEncodedPhpEnd.Length))
         $PhpContent = [System.Web.HttpUtility]::HtmlDecode($PhpContent) 
         $PhpContent = $PhpContent.Replace($TagHtmlEncodedPhpStart,$TagPhpStart).Replace($TagHtmlEncodedPhpEnd,$TagPhpEnd)
-
+        # Bug Fix
+        $PhpContent = $PhpContent.Replace('returnisset','return isset')
         $NewPhpContent = $HtmlContent.Insert($Start, $PhpContent)
         Set-Content -Path "$DestinationPath" -Value $NewPhpContent
         $DestinationPath

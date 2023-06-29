@@ -13,6 +13,6 @@ $ObfuscateScript = (Resolve-Path "$ObfuscateScript").Path
 
 . "$ObfuscateScript"
 
-$Out = Invoke-PhpObfuscator $Src $Dst -Test -ChangeFunctionNames -RemoveComments -RenamingMethod "MD5" -ObfuscateVariables -EncodeStrings -UseHexValuesForNames -RemoveWhitespaces -Md5Length 24 -PrefixLength 8
+$Out = Invoke-PhpObfuscator $Src $Dst -Test -RenameFunctions -RemoveComments -RenamingMethod "MD5" -ObfuscateVariables -EncodeStrings -UseHexValuesForNames -RemoveWhitespaces -Md5Length 24 -PrefixLength 8
 
 Write-Host "Done Obfuscated PHP file: $Out" -f DarkGreen

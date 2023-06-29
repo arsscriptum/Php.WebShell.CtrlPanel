@@ -33,7 +33,7 @@ $Out = Invoke-PhpObfuscator $Src $Dst -RemoveComments -ObfuscateVariables -Encod
 Write-Host "Done Obfuscated PHP file: $Out" -f DarkGreen
 $Dst = Join-Path "$OutDir" "Level3.php"
 
-$Out = Invoke-PhpObfuscator $Src $Dst -RemoveComments -ObfuscateVariables -EncodeStrings -UseHexValuesForNames -RemoveWhitespaces 
+$Out = Invoke-PhpObfuscator $Src $Dst -RemoveComments -ObfuscateVariables -EncodeStrings -UseHexValuesForNames -RemoveWhitespaces
 Write-Host "Done Obfuscated PHP file: $Out" -f DarkGreen
 $Dst = Join-Path "$OutDir" "Level4.php"
 
