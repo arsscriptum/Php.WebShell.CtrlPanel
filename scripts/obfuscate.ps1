@@ -4,9 +4,7 @@
 #>
 
 
-
-
-function Get-FnList{
+function Get-PhpFnList{
 
     [CmdletBinding(SupportsShouldProcess)]
     param(
@@ -64,13 +62,20 @@ function Invoke-ChangePhpFuncNames{
     [CmdletBinding(SupportsShouldProcess)]
     param(
         [Parameter(Mandatory=$true, position=0)]
-        [string]$Path
+        [ValidateNotNullOrEmpty()]
+        [string]$Path,
+        [Parameter(Mandatory=$false, position = 1)]
+        [string]$DestinationPath
     )
-
+    Write-Verbose "[Invoke-ChangePhpFuncNames] Path is `"$Path`"" 
     $Path = (Resolve-Path "$Path").Path
+    if([string]::IsNullOrEmpty($DestinationPath)){
+        $DestinationPath = $Path
+        Write-Verbose "[Invoke-ChangePhpFuncNames] Destination Path set to `"$DestinationPath`"" 
+    }
     
     $Content = Get-Content -Path $Path -Raw
-    $Fnames = (Get-FnList $Path).Name
+    $Fnames = (Get-PhpFnList $Path).Name
     ForEach($fn in $Fnames){
         if([string]::IsNullOrEmpty($fn)){ continue ; }
         [BigInt]$NumVal = ((Get-Date -UFormat "%s") -as [BigInt])
@@ -78,13 +83,12 @@ function Invoke-ChangePhpFuncNames{
         $RandIds = $Guid.Split('-')
         [BigInt]$NumVal = ((Get-Date -UFormat "%s") -as [BigInt]) / ( Get-Random -Maximum 9999999 )
         $NewFunctionName = "{0}{1}" -f (Get-RandomVerb), $RandIds[0]
-        Write-Host "Changing `"$fn`" -> `"$NewFunctionName`"" -f DarkCyan
+        Write-Verbose "Changing `"$fn`" -> `"$NewFunctionName`""
         $Content = $Content.Replace("$fn", "$NewFunctionName")
     } 
-
-    #$NewPath = "$Path" + ".obfuscated"
-    Set-Content -Path "$Path" -Value $Content
-    $Path
+    Write-Verbose "[Invoke-ChangePhpFuncNames] Writing file `"$DestinationPath`"" 
+    Set-Content -Path "$DestinationPath" -Value $Content
+    return "$DestinationPath"
 }
 
 
@@ -99,7 +103,7 @@ function Invoke-PhpObfuscator{
         [ValidateSet('CRC32','MD5','NUM')]
         [string]$RenamingMethod='CRC32',
         [Parameter(Mandatory=$false)]
-        [switch]$ChangeFunctionNames,
+        [switch]$RenameFunctions,
         [Parameter(Mandatory=$false)]
         [switch]$RemoveComments,
         [Parameter(Mandatory=$false)]
@@ -126,17 +130,19 @@ function Invoke-PhpObfuscator{
 
         $PathSrc = (Resolve-Path "$Path").Path
         $Content = ''
+        if($Test){
+            Remove-Item -Path "$PSScriptRoot\test" -Recurse -Force -ErrorAction Ignore | Out-Null
+            New-Item -Path "$PSScriptRoot\test" -ItemType Directory -Force -ErrorAction Ignore | Out-Null
+        }
+        if($RenameFunctions){
 
-        if($ChangeFunctionNames){
-            $PathTmp = "$PSScriptRoot\tmp01.php"
-            Copy-Item $PathSrc $PathTmp -Force 
-            Write-Host "Invoke-ChangePhpFuncNames `"$PathTmp`"" -f DarkYellow
-            Invoke-ChangePhpFuncNames $PathTmp
+            $PathTmp = Invoke-ChangePhpFuncNames $PathSrc "$PSScriptRoot\tmp_change_function_names.php"
             $Content = Get-Content -Path $PathTmp -Raw
             if($Test){
-                Write-Host "Not removing file `"$PathTmp`"" -f DarkYellow
+                Write-Verbose "Moving file `"$PathTmp`" to `"$PSScriptRoot\test`"" 
+                Move-Item "$PathTmp" "$PSScriptRoot\test"
             }else{
-                Write-Host "Removing file `"$PathTmp`"" -f DarkYellow
+                Write-Verbose "Removing file `"$PathTmp`""
                 Remove-Item "$PathTmp" -Force -ErrorAction Ignore | Out-Null
             }
             
@@ -152,15 +158,14 @@ function Invoke-PhpObfuscator{
         $PhpContent = $Content.Substring($Start,($End-$Start)+($TagPhpEnd.Length))
         $HtmlContent = $Content.Remove($Start,($End-$Start)+($TagPhpEnd.Length))
         if($Test){
-            New-Item -Path "$PSScriptRoot\test" -ItemType Directory -Force -ErrorAction Ignore | Out-Null
             $PathPhpContent = "$PSScriptRoot\test\PhpContent.php"
             Set-Content -Path "$PathPhpContent" -Value $PhpContent
-            Write-Host "Writing file `"$PathPhpContent`"" -f DarkYellow
+            Write-Verbose "Writing file `"$PathPhpContent`""
         }
         if($Test){
             $PathHtmlContent = "$PSScriptRoot\test\HtmlContent.php"
             Set-Content -Path "$PathHtmlContent" -Value $HtmlContent
-            Write-Host "Writing file `"$PathHtmlContent`"" -f DarkYellow
+            Write-Verbose "Writing file `"$PathHtmlContent`""
         }
         Add-Type -AssemblyName System.Web
         $encodedPhpCode = [System.Web.HttpUtility]::UrlEncode($PhpContent) 
@@ -192,7 +197,7 @@ function Invoke-PhpObfuscator{
         if($Test){
             $PathBodyContent = "$PSScriptRoot\test\BodyContent.php"
             Set-Content -Path "$PathBodyContent" -Value $BodyStr
-            Write-Host "Writing file `"$PathBodyContent`"" -f DarkYellow
+            Write-Verbose "Writing file `"$PathBodyContent`""
         }
         $MyHeaders = @{
         "authority"="www.gaijin.at"
@@ -201,34 +206,24 @@ function Invoke-PhpObfuscator{
           "scheme"="https"
           "accept"="text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7"
           "accept-encoding"="gzip, deflate, br"
-          "accept-language"="fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7"
           "cache-control"="no-cache"
           "origin"="https://www.gaijin.at"
-          "pragma"="no-cache"
           "referer"="https://www.gaijin.at/en/tools/php-obfuscator"
-          "sec-ch-ua"="`"Not.A/Brand`";v=`"8`", `"Chromium`";v=`"114`", `"Google Chrome`";v=`"114`""
-          "sec-ch-ua-mobile"="?0"
-          "sec-ch-ua-platform"="`"Windows`""
-          "sec-fetch-dest"="document"
-          "sec-fetch-mode"="navigate"
-          "sec-fetch-site"="same-origin"
-          "sec-fetch-user"="?1"
-          "upgrade-insecure-requests"="1"
         }
         $Url = "https://www.gaijin.at/en/tools/php-obfuscator"
         $CntType = "application/x-www-form-urlencoded"
         $Ret = Invoke-WebRequest -UseBasicParsing -Uri "$Url" -Method "POST" -Headers $MyHeaders -ContentType "$CntType" -Body "$BodyStr"
         $RetStatusCode = $Ret.StatusCode 
-        Write-Host "RetStatusCode `"$RetStatusCode`"" -f DarkBlue
+        if($RetStatusCode -ne 200) { throw "invalid server response" }
+        Write-Verbose "RetStatusCode `"$RetStatusCode`"" 
         $RetContent = $Ret.Content 
         $TagHtmlEncodedPhpStart = '&lt;?php'
         $TagHtmlEncodedPhpEnd = '?&gt;'
         $CodedTag = '<div class="box_form"><form><textarea'
         if($Test){
             $PathWebRequestContent = "$PSScriptRoot\test\WebRequest.php"
-           
             Set-Content -Path "$PathWebRequestContent" -Value $RetContent
-            Write-Host "Writing file `"$PathHtmlContent`"" -f DarkYellow
+            Write-Verbose "Writing file `"$PathHtmlContent`"" 
         }
         $CodedTagIndex = $RetContent.LastIndexOf($CodedTag)
         $StartIndex = $RetContent.IndexOf($TagHtmlEncodedPhpStart,$CodedTagIndex)
@@ -246,9 +241,3 @@ function Invoke-PhpObfuscator{
     }
 }
 
-
-$Src = "$PSScriptRoot\..\index.php"
-$Dst = "$PSScriptRoot\new.php"
-$Src = (Resolve-Path "$Src").Path
-
-Invoke-PhpObfuscator $Src $Dst -Test -RemoveComments -ObfuscateVariables -EncodeStrings -UseHexValuesForNames -Verbose

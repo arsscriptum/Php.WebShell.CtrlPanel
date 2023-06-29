@@ -1,3 +1,7 @@
 new.php
 scripts/test
 scripts/test/**
+obfuscated/test
+obfuscated/test/**
+test
+test/**
