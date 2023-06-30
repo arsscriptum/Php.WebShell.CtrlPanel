@@ -520,7 +520,7 @@
     <body class="body-container">   
         <header>
             <nav>
-                <h1>> control panel</h1>
+                <h1><?php echo $_SERVER['HTTP_HOST']; ?> >> control panel </h1>
                 <div class="nav-items">
                 	<a onclick="showConfirmPopup()">[restart now]</a>
                     <a onclick="showUploadPopup()">[upload]</a>
