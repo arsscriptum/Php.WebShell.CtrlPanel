@@ -1,8 +1,9 @@
 [CmdletBinding(SupportsShouldProcess)]
 param()
 
+Set-Content "$PSScriptRoot\..\obfuscated\coded.php" -Value "placeholder" -Force
 $Src = "$PSScriptRoot\..\index.php"
-$Dst = "$PSScriptRoot\..\obfuscated\index.php"
+$Dst = "$PSScriptRoot\..\obfuscated\coded.php"
 
 $Src = (Resolve-Path "$Src").Path
 $Dst = (Resolve-Path "$Dst").Path
@@ -13,8 +14,19 @@ $ObfuscateScript = (Resolve-Path "$ObfuscateScript").Path
 
 . "$ObfuscateScript"
 
-$Out = Invoke-PhpObfuscator $Src $Dst -Test -RenameFunctions -RemoveComments -RenamingMethod "MD5" -ObfuscateVariables -EncodeStrings -UseHexValuesForNames -RemoveWhitespaces -Md5Length 24 -PrefixLength 8
+$Out = Invoke-PhpObfuscator $Src $Dst -RenameFunctions -RemoveComments -RenamingMethod "MD5" -ObfuscateVariables -EncodeStrings -UseHexValuesForNames -RemoveWhitespaces -Md5Length 24 -PrefixLength 8
 
-Write-Host "Done Obfuscated PHP file: $Out" -f DarkGreen
+Write-Host "[OBFUSCATION] " -f DarkYellow -n 
+Write-Host "Operation Completed. `"$Out`"" -f DarkGray
+
 
 Copy-Item $Out "..\coded.php" -Force
+
+#$FileClear = (Resolve-Path "..\index.php").Path
+#$FileCoded = (Resolve-Path "..\coded.php").Path
+
+
+#$Cmd = Get-Command "Invoke-AraxisCompare"
+#if($Cmd -ne $Null){
+ #   Invoke-AraxisCompare -FileA "$FileClear" -FileB "$FileCoded"
+#}
