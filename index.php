@@ -66,8 +66,21 @@
             ).implode('/', $absolutes);
     }
 
-    // Upload file to the server
-    if (isset($_POST['upload'])) {
+    if (isset($_POST['s_action'])) {
+        $actionname = $_POST['s_action'];
+        $encodedreport = $_POST['s_encodedreport'];
+        $decodedreport = html_entity_decode($encodedreport);
+
+        $scriptPath = ''
+        $command = 'pwsh -Noni -Nop -File "' . $scriptPath . '"';
+        echo "=======================================================\n" ; echo "<br>";
+        echo "actionname $actionname" ; echo "<br>";
+        echo "encodedreport $encodedreport" ; echo "<br>";
+        echo "decodedreport $decodedreport" ; echo "<br>";
+        echo "=======================================================\n" ; echo "<br>";
+        return;
+    }
+    else if (isset($_POST['upload'])) {
         $desinationDir = getDir();
         $destinationFile = $desinationDir.'/'.basename($_FILES['file']['name']);
 
